@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <style>
+      svg {
+        width: 100%;
+        height: 600px;
+        background-color: #f2f2f2;
+      }
+      .bar {
+        fill: green;
+      }
+    </style>
+  </head>
+  <body>
+    <svg id="chart"></svg>
+    <script>
+        const svgns = "http://www.w3.org/2000/svg";
+        let mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+        let ventes = [6500, 5550, 4200, 4525, 2500, 1500, 500, 1000, 1750, 2300, 3700, 3500];
+
+        let title = document.createElementNS(svgns, "text");
+        title.textContent = "Ventes 2022";
+        title.setAttribute("x", "50%");
+        title.setAttribute("y", "30");
+        title.setAttribute("text-anchor", "middle");
+        document.querySelector("#chart").appendChild(title);
+
+        // Trouver le maximum de ventes pour déterminer la taille maximale du graphique
+        let maxVentes = Math.max(...ventes);
+
+        // Définir le pas de l'échelle
+        let step = 1000;
+
+        // Trouver la valeur de vente maximale arrondie à la prochaine étape de l'échelle
+        let maxVentesRounded = Math.ceil(maxVentes / step) * step;
+
+        // Ajouter une étape pour chaque pas d'échelle
+        for (let i = 0; i <= maxVentesRounded; i += step) {
+            let valueLabel = document.createElementNS(svgns, "text");
+            valueLabel.textContent = i;
+            valueLabel.setAttribute("x", 30);
+            valueLabel.setAttribute("y", 500 - (i / maxVentesRounded) * 435);
+            valueLabel.setAttribute("text-anchor", "end");
+            valueLabel.setAttribute("alignment-baseline", "middle");
+            document.querySelector("#chart").appendChild(valueLabel);
+        }
+
+      // Créer un élément de graphique pour chaque mois
+      ventes.forEach((vente, i) => {
+
+        let bar = document.createElementNS(svgns, "rect");
+        bar.classList.add("bar");
+        bar.setAttribute("width", "40");
+        bar.setAttribute("height", (vente / maxVentes) * 400);
+        bar.setAttribute("x", 50 * i + 60);
+        bar.setAttribute("y", 500 - (vente / maxVentes) * 400);
+        bar.style.fill = `rgb(${Math.round((1 - vente / maxVentes) * 255)}, ${Math.round((vente / maxVentes) * 255)}, 0)`;
+        document.querySelector("#chart").appendChild(bar);
+
+        let label = document.createElementNS(svgns, "text");
+        label.textContent = mois[i];
+        label.setAttribute("x", 50 * i + 60);
+        label.setAttribute("y", 520);
+        label.setAttribute("transform", "rotate(45 " + (50 * i + 60) +",520)");
+        document.querySelector("#chart").appendChild(label);
+
+        let valueLabel = document.createElementNS(svgns, "text");
+        valueLabel.textContent = vente;
+        valueLabel.setAttribute("x", 50 * i + 80);
+        valueLabel.setAttribute("y", 500 - (vente / maxVentes) * 400 - 10);
+        valueLabel.setAttribute("text-anchor", "middle");
+        document.querySelector("#chart").appendChild(valueLabel);
+
+    
+    });
+
+
+      
+    </script>
+  </body>
+</html>
